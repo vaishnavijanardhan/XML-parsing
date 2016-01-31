@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    
+    <head><title>Cable Networks</title></head>
+    
+<body>
+   
+    <h2><p align=center> Enter URL for Company List XML File: </h2>
+     <form>
+         <p align=center>
+             <input type="text" id="URL" size="80" />
+         <br/><br />
+         <input type="button" id="submit" value="Submit Query" onclick = "LoadFunction()" />
+         </p>
+    </form>
+    
+           <script> 
+               
+               function LoadFunction()
+               {
+                  var XMLwrite, Content, XMLDoc, XMLres;
+                  XMLDoc=document.getElementById("URL").value;
+                   
+        if(XMLDoc=="")
+        {
+            alert("No URL specified!");
+        }
+        else
+        
+        {
+            try
+            {
+                
+             XMLwrite = new XMLHttpRequest();
+             XMLwrite.open('GET', XMLDoc, false);
+             XMLwrite.send();
+             XMLres= XMLwrite.responseXML;
+            
+                            
+                    xmlParseFile=document.implementation.createDocument("","",null);
+                    xmlParseFile.async=false;
+                    xmlParseFile.load(XMLDoc);
+                    if (xmlParseFile.documentElement.nodeName=="parsererror")
+                        {
+                            alert("Error: XML is not well formed!");
+                            return false;
+                        }
+                }
+              
+          
+            catch(e)
+            {
+                alert("XML does not exist");
+                return;
+            }
+    
+            var x = XMLres.getElementsByTagName("Row");
+            if(x.length == 0)
+            {
+                alert("No companies to display!");
+                return;
+            }
+            
+                 
+        var New_Window=window.open("","","scrollbars=yes, width=900, height=900");
+        var Header=XMLres.getElementsByTagName("Data");
+        var Network=XMLres.getElementsByTagName("Network");
+        var Owner=XMLres.getElementsByTagName("Owner");
+        var Feeds=XMLres.getElementsByTagName("Feeds");
+        var Notes=XMLres.getElementsByTagName("Notes");
+        var Home=XMLres.getElementsByTagName("HomePage");
+        var Logo=XMLres.getElementsByTagName("Logo");
+                  
+            Content="";
+            Content+="<table border=2>";
+                  
+                     for(var i=0;i<Header.length;i++)
+            {
+                Content+="<th>";
+                Content+=Header[i].childNodes[0].nodeValue;
+                Content+="</th>";
+            }
+            
+for(var k=0;k<5;k++)
+{
+         
+       
+for(var i=0;i<Network.length;i++)   
+{
+Content+="<tr>";
+Content+="<td>";
+if(Network[i].childNodes.length>0)   
+{
+ Content+=Network[i].childNodes[0].nodeValue;
+}
+ Content+="</td>";
+ 
+ 
+Content+="<td>";            
+if(Owner[i].childNodes.length>0)
+{
+ Content+=Owner[i].childNodes[0].nodeValue;
+}
+ Content+="</td>";
+    
+Content+="<td>";
+Content+="<ul>";
+                
+for(var j=0;j<Feeds[i].getElementsByTagName("Feed").length;j++)
+{
+if(Feeds[i].getElementsByTagName("Feed")[j].childNodes.length>0)
+{
+ Content+="<li>";
+ Content+=Feeds[i].getElementsByTagName("Feed")[j].childNodes[0].nodeValue;   
+ Content+="</li>";
+}
+}
+ Content+="</ul>";
+ Content+="</td>";
+ 
+Content+="<td>";    
+if(Notes[i].childNodes.length>0)
+ {
+  Content+=Notes[i].childNodes[0].nodeValue;
+ }
+  Content+="</td>";
+    
+  Content+="<td>";
+if(Home[i].childNodes.length>0)
+{
+Content+="<a href= "+ Home[i].childNodes[0].nodeValue +"> "+Home[i].childNodes[0].nodeValue + "</a>";
+}
+ Content+="</td>";
+            
+ Content+="<td>";
+if(Logo[i].childNodes.length>0)
+{
+ Content+="<img src= \""+Logo[i].childNodes[0].nodeValue+"\" />";
+}
+ Content+="</td>";
+ Content+="</tr>";
+}
+}
+ Content+="</center></table>";
+ New_Window.document.body.innerHTML=Content;
+                  
+}  
+}
+                                    
+    </script>
+    <noscript>
+    </body>
+    
+</html>    
